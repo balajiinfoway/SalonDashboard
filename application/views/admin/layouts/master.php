@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Solan Dashboard</title>
+    <title><?= $pageTitle ?>-Solan Dashboard</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -14,12 +14,13 @@
     <link rel="stylesheet" type="text/css" href="<?= base_url() ?>/assets/icon/icofont/css/icofont.css">
     <link rel="stylesheet" type="text/css" href="<?= base_url() ?>/assets/css/component.css">
     <link rel="stylesheet" type="text/css" href="<?= base_url() ?>/assets/css/alertify.min.css">
+    <link rel="stylesheet" href="<?= base_url() ?>/assets/css/dataTables.bootstrap4.min.css" />
     <link rel="stylesheet" type="text/css" href="<?= base_url() ?>/assets/css/style.css">
     <link rel="stylesheet" type="text/css" href="<?= base_url() ?>/assets/css/jquery.mCustomScrollbar.css">
 </head>
 <body>
 
-    <div class="theme-loader">
+    <div id="theme-loader" class="theme-loader">
         <div class="ball-scale">
             <div class='contain'>
                 <div class="ring">
@@ -84,15 +85,34 @@
     <script type="text/javascript" src="<?= base_url() ?>assets/js/jquery.slimscroll.js"></script>
     <script type="text/javascript" src="<?= base_url() ?>assets/js/SmoothScroll.js"></script>
     <script type="text/javascript" src="<?= base_url() ?>assets/js/alertify.min.js"></script>
+    <script type="text/javascript" src="<?= base_url() ?>assets/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="<?= base_url() ?>assets/js/dataTables.bootstrap4.min.js"></script>
+    <script type="text/javascript" src="<?= base_url() ?>assets/js/axios.min.js"></script>
     <script src="<?= base_url() ?>assets/js/pcoded.min.js"></script>
     <script src="<?= base_url() ?>assets/js/demo-12.js"></script>
     <script src="<?= base_url() ?>assets/js/jquery.mCustomScrollbar.concat.min.js"></script>
     <script type="text/javascript" src="<?= base_url() ?>assets/js/script.min.js"></script>
     <script type="text/javascript" src="<?= base_url() ?>assets/js/common.js"></script>
+    <script>
+        function showLoader() {
+            document.getElementById("theme-loader").style.display = "block";
+            document.getElementById("pcoded").style.display = "none";
+        }
+        function hideLoader(){
+            document.getElementById("theme-loader").style.display = "none";
+            document.getElementById("pcoded").style.display = "block";
+        }
+    </script>
+    <?php
+    $this->load->view($this->folder.'/layouts/common/common_pop');
+    $this->load->view($this->folder.'/layouts/common/common_script');
+    if(isset($scripts)){
+        $this->load->view($this->folder.'/scripts/'.$scripts);
+    }
+    ?>
     <?php
         if($this->session->flashdata('message')) {
         $message = $this->session->flashdata('message');
-        print_r($message);
     ?>
             <script>
                 showNotice("<?= $message['type'] ?>", "<?= $message['message'] ?>");

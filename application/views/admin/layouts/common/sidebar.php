@@ -6,13 +6,20 @@
 	</div>
 	<div class="pcoded-inner-navbar main-menu">
 		<ul class="pcoded-item pcoded-left-item">
-			<li class="active">
+			<li class="<?= $menu_active == ''?'active':''?>">
 				<a href="<?= base_url() ?>">
 					<span class="pcoded-micon">
 						<i class="ti-home"></i>
-						<b>D</b>
 					</span>
-					<span class="pcoded-mtext" data-i18n="nav.dash.main">Dashboard</span>
+					<span class="pcoded-mtext">Dashboard</span>
+				</a>
+			</li>
+			<li class="<?= $menu_active == 'user'?'active':''?>">
+				<a href="<?= $this->adminURL ?>user">
+					<span class="pcoded-micon">
+						<i class="ti-user"></i>
+					</span>
+					<span class="pcoded-mtext">User</span>
 				</a>
 			</li>
 		</ul>

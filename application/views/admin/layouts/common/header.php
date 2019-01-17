@@ -97,7 +97,7 @@
 							</a>
 						</li>
 						<li>
-							<a href="<?= $this->adminURL ?>logout">
+							<a href="<?= base_url() ?>logout">
 								<i class="ti-layout-sidebar-left"></i> Logout
 							</a>
 						</li>
