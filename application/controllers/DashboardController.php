@@ -9,7 +9,6 @@ class DashboardController extends AdminController {
     public function index(){
         $this->checkSessionAdmin();
         $data['pageTitle'] = "Dashboard";
-        $this->setFlashData('success','Login Success');
         $this->adminView('dashboard',$data);
     }
 
