@@ -24,6 +24,15 @@ class CommonModel extends CI_Model {
         if (isset($condition['conditions'])) {
             $this->db->where($condition['conditions']);
         }
+        if (isset($condition['or_where'])) {
+            $this->db->or_where($condition['or_where']);
+        }
+        if (isset($condition['like'])) {
+            $this->db->like($condition['like']);
+        }
+        if (isset($condition['or_like'])) {
+            $this->db->or_like($condition['or_like']);
+        }
         if (isset($condition['group_by'])) {
             $this->db->group_by($condition['group_by']);
         }
@@ -112,5 +121,16 @@ class CommonModel extends CI_Model {
         $query = $this->db->get();
         return $query->num_rows();
     }
+
+    function countAllResult($table, $condition = array()){
+        $this->db->select('*');
+        $this->db->from($table);
+        if(isset($condition['conditions'])){
+            $this->db->where($condition['conditions']);
+        }
+        return $this->db->count_all_results();
+    }
+
+
 }
 ?>

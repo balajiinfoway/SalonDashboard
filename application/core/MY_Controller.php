@@ -54,6 +54,10 @@ class AdminController extends MY_Controller{
         $data['page'] = $fileName;
         $this->load->view($this->folder.'/layouts/guest', $data);
     }
+    public function loadView($fileName, $param = array()){
+        $data = $param;
+        $this->load->view($this->folder.'/'.$fileName, $data);
+    }
     public function setFlashData($type, $message){
         $msg = array('type' => $type, 'message' => $message);
         $this->session->set_flashdata('message',$msg);
@@ -62,6 +66,13 @@ class AdminController extends MY_Controller{
         if (empty($this->session->userdata('is_admin'))) {
             redirect("/".$this->folder.'/Login');
         }
+    }
+    public function errorFunction($status,$error){
+        $errors = array(
+            'status' => $status,
+            'error' => $error
+        );
+        echo json_encode($errors);
     }
 
 }
