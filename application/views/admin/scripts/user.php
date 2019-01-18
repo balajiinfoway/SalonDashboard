@@ -9,7 +9,7 @@ $(document).ready(function () {
     			type: "POST"
     		},
     		"columnDefs": [{
-    			"targets": [0, 3],
+    			"targets": [2, 3],
     			"orderable": false,
     		}, ],
     	});

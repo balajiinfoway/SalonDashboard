@@ -1,9 +1,11 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 class User extends AdminController {
+    var $order_column = array("name", "email");
     public function __construct() {
         parent::__construct();
     }
+
     public function index() {
         $this->checkSessionAdmin();
         $data['pageTitle'] = "Users List";
@@ -19,6 +21,8 @@ class User extends AdminController {
         }
         if(isset($_POST["order"]))
         {
+            $conditions['order_by'] = array("field"=>$this->order_column[$_POST['order']['0']['column']],"order"=>$_POST['order']['0']['dir']);
+        }else{
             $conditions['order_by'] = array("field"=>"id","order"=>"desc");
         }
         if(isset($_POST["length"]) && $_POST["length"] != -1)
