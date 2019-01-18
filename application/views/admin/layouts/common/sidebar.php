@@ -22,6 +22,14 @@
 					<span class="pcoded-mtext">User</span>
 				</a>
 			</li>
+			<li class="<?= $menu_active == 'service'?'active':''?>">
+				<a href="<?= $this->adminURL ?>service">
+					<span class="pcoded-micon">
+						<i class="ti-gallery"></i>
+					</span>
+					<span class="pcoded-mtext">Service</span>
+				</a>
+			</li>
 		</ul>
 	</div>
 </nav>

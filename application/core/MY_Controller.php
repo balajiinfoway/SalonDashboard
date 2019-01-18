@@ -74,5 +74,8 @@ class AdminController extends MY_Controller{
         );
         echo json_encode($errors);
     }
+    public function timeStamp(){
+        return date('Y/m/d H:i:s');
+    }
 
 }

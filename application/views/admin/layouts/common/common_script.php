@@ -46,7 +46,7 @@
                     showValidationError(errors);
                 }else{
                     hideLoader();
-                    showNotice('success', '@yield("title") Added Successfully');
+                    showNotice('success', '<?= $pageTitle?> Added Successfully');
                     $('#common-popup').modal('hide');
                     setTimeout(function(){
                         window.location.reload();
