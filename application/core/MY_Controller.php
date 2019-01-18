@@ -40,7 +40,7 @@ class AdminController extends MY_Controller{
         $this->load->library('session');
         $this->load->model('CommonModel');
         $this->folder = "admin";
-        $this->adminURL = base_url()."".$this->folder."/";
+        $this->adminURL = base_url();
     }
     public function adminView($fileName, $param = array()) {
         $data = $param;
@@ -64,7 +64,7 @@ class AdminController extends MY_Controller{
     }
     public function checkSessionAdmin() {
         if (empty($this->session->userdata('is_admin'))) {
-            redirect("/".$this->folder.'/Login');
+            redirect('/login');
         }
     }
     public function errorFunction($status,$error){

@@ -1,5 +1,5 @@
 <div class="login-card card-block auth-body mr-auto ml-auto">
-	<form class="md-float-material" method="post" action="<?= $this->adminURL ?>Login">
+	<form class="md-float-material" method="post" action="<?= $this->adminURL ?>login">
 		<div class="text-center">
 			<img src="<?= base_url() ?>assets/images/logo.png" alt="logo.png">
 		</div>

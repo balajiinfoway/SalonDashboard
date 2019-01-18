@@ -16,11 +16,11 @@ class LoginController extends AdminController {
                 $result = $this->CommonModel->selectSingleRow('users', $conditions);
                 if (count($result) <= 0) {
                     $this->setFlashData('error','Incorrect email Address');
-                    redirect($this->adminURL."/Login",$data);
+                    redirect("/login",$data);
                 } else if (password_verify($password,$result['password'])) {
                     if ($result['status'] == 1) {
                         $this->setFlashData('error','Your Account Is Inactive');
-                        redirect($this->adminURL."/Login",$data);
+                        redirect("/login",$data);
                     } else {
                         $userRecords = $result;
                         $this->session->set_userdata($userRecords);
@@ -29,7 +29,7 @@ class LoginController extends AdminController {
                             redirect($redirect_url);
                         } else {
                             $this->setFlashData('success','Login Success');
-                            redirect($this->adminURL."/DashboardController");
+                            redirect("/");
                         }
                     }
                 }else{
@@ -38,7 +38,7 @@ class LoginController extends AdminController {
                 }
             } else {
                 $data['errors'] = validation_errors();
-                redirect($this->adminURL."/Login",$data);
+                redirect("/login",$data);
             }
         } else {
             $this->loginView('auth/singin', $data);
@@ -48,6 +48,6 @@ class LoginController extends AdminController {
     public function logout(){
         $this->session->sess_destroy();
         $this->session->set_flashdata('success', ("You are logout successfully"));
-        redirect($this->adminURL.'Login');
+        redirect($this->adminURL.'login');
     }
 }
