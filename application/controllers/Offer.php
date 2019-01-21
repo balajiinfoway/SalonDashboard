@@ -65,7 +65,7 @@ class Offer extends AdminController {
         $this->form_validation->set_rules('start_date', 'Start Date', 'required');
         $this->form_validation->set_rules('end_date', 'End Date', 'required');
         if (empty($_FILES['offerImage']['name'])){
-            $this->form_validation->set_rules('offerImage', 'Document', 'required');
+            $this->form_validation->set_rules('offerImage', 'Image', 'required');
         }
 
         if ($this->form_validation->run() == FALSE) {
@@ -106,6 +106,7 @@ class Offer extends AdminController {
         $data['id'] = $id;
         $this->loadView('offer/edit',$data);
     }
+
     public function update($id=null){
         $conditions =array("id" => $id);
         $this->form_validation->set_rules('name', 'Name', 'trim|required');
@@ -133,7 +134,7 @@ class Offer extends AdminController {
                     $this->errorFunction(true,$this->upload->display_errors());
                     exit;
                 }
-                $record = $this->CommonModel->selectSingleData("users",$conditions);
+                $record = $this->CommonModel->selectSingleData("offer",$conditions);
                 if($record['image']!= ''){
                     $path = $_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['SCRIPT_NAME'])."/assets/upload/offer/".$record['image'];
                     unlink($path);
