@@ -15,6 +15,7 @@
     <link rel="stylesheet" type="text/css" href="<?= base_url() ?>/assets/css/component.css">
     <link rel="stylesheet" type="text/css" href="<?= base_url() ?>/assets/css/alertify.min.css">
     <link rel="stylesheet" href="<?= base_url() ?>/assets/css/dataTables.bootstrap4.min.css" />
+    <link rel="stylesheet" href="<?= base_url() ?>/assets/css/bootstrap.datepicker.css" />
     <link rel="stylesheet" type="text/css" href="<?= base_url() ?>/assets/css/style.css">
     <link rel="stylesheet" type="text/css" href="<?= base_url() ?>/assets/css/jquery.mCustomScrollbar.css">
 </head>
@@ -87,6 +88,7 @@
     <script type="text/javascript" src="<?= base_url() ?>assets/js/alertify.min.js"></script>
     <script type="text/javascript" src="<?= base_url() ?>assets/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="<?= base_url() ?>assets/js/dataTables.bootstrap4.min.js"></script>
+    <script type="text/javascript" src="<?= base_url() ?>assets/js/bootstrap-datepicker.min.js"></script>
     <script type="text/javascript" src="<?= base_url() ?>assets/js/axios.min.js"></script>
     <script src="<?= base_url() ?>assets/js/pcoded.min.js"></script>
     <script src="<?= base_url() ?>assets/js/demo-12.js"></script>
