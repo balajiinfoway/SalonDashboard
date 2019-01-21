@@ -23,6 +23,13 @@
                         </select>
 					</div>
 				</div>
+				<div class="col-sm-6">
+                    <div class="form-group form-default">
+                        <label class="float-label">Image</label>
+						<input type="file" name="serviceImage" class="form-control" requierd>
+						<span class="form-bar"></span>
+					</div>
+				</div>
 
 			</div>
 		</div>

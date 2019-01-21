@@ -26,6 +26,17 @@
 				</div>
 			</div>
 
+			<div class="col-sm-6">
+				<div class="form-group form-default">
+					<label class="float-label">Service Image</label>
+					<input type="file" name="serviceImage" class="form-control" requierd>
+					<span class="form-bar"></span>
+					<?php if($record['image']) {  ?>
+					<img src="<?= base_url() ?>/assets/upload/service/<?= $record['image'] ?>" width="60px" height="60px">
+					<?php } ?>
+				</div>
+			</div>
+
 		</div>
 	</div>
 	<?php $this->load->view($this->folder.'/layouts/common/common_popup_footer'); ?>

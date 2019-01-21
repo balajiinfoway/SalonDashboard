@@ -26,6 +26,7 @@
                                 <tr>
                                     <th>Name</th>
                                     <th>Type</th>
+                                    <th>Image</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>

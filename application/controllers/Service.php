@@ -15,7 +15,7 @@ class Service extends AdminController {
     public function fetch_data(){
         $conditions = array();
 
-        $conditions1['conditions'] = array('deleted_at' => '');
+        $conditions1['conditions'] = array("deleted_at IS NULL" => null);
         if(isset($_POST["search"]["value"]) && $_POST["search"]["value"] != '')
         {
             $conditions['like'] = array('name' => $_POST["search"]["value"]);
@@ -39,6 +39,10 @@ class Service extends AdminController {
             $sub_array = array();
             $sub_array[] = $row['name'];
             $sub_array[] = $row['type'];
+            if($row['image'])
+            $sub_array[] = '<img src="'.base_url().'assets/upload/service/'.$row['image'].'" width="60px" height="60px">';
+            else
+            $sub_array[] = '';
             $sub_array[] = '<button type="button" data-url="'.$this->adminURL.'service/edit/'.$row['id'].'" name="update" id="'.$row['id'].'" class="btn btn-warning btn-xs edit-form-button">Update</button>   <button type="button" name="delete" data-url="'.$this->adminURL.'service/delete/'.$row['id'].'" id="'.$row['id'].'" class="btn btn-danger btn-xs delete-button">Delete</button>';
             $data[] = $sub_array;
         }
@@ -55,10 +59,27 @@ class Service extends AdminController {
         $this->checkSessionAdmin();
         $this->form_validation->set_rules('name', 'Name', 'trim|required');
         $this->form_validation->set_rules('type', 'Type', 'trim|required');
+        if (empty($_FILES['serviceImage']['name'])){
+            $this->form_validation->set_rules('serviceImage', 'Image', 'required');
+        }
         if ($this->form_validation->run() == FALSE) {
             $this->errorFunction(true,validation_errors());
         } else {
             $postData = $this->input->post();
+            if($_FILES["serviceImage"]['name'] != ""){
+                $imagename = time()."-".str_replace(" ","-",$_FILES["serviceImage"]['name']);
+                $this->load->library('upload');
+                $this->upload->initialize(array(
+                    "upload_path" => "./assets/upload/service/",
+                    "allowed_types" => "gif|jpg|png",
+                    "file_name"=>$imagename,
+                ));
+                if (!$this->upload->do_upload("serviceImage")){
+                    $this->errorFunction(true,$this->upload->display_errors());
+                    exit;
+                }
+                $records['image'] = $imagename;
+            }
             $records['name'] = $postData['name'];
             $records['type'] = $postData['type'];
             $records['created_at'] = $this->timeStamp();
@@ -85,6 +106,25 @@ class Service extends AdminController {
                 if($key !="submit"){
                     $records[$key] = $value;
                 }
+            }
+            if($_FILES["serviceImage"]['name'] != ""){
+                $imagename = time()."-".str_replace(" ","-",$_FILES["serviceImage"]['name']);
+                $this->load->library('upload');
+                $this->upload->initialize(array(
+                    "upload_path" => "./assets/upload/service/",
+                    "allowed_types" => "gif|jpg|png|jpeg",
+                    "file_name"=>$imagename,
+                ));
+                if (!$this->upload->do_upload("serviceImage")){
+                    $this->errorFunction(true,$this->upload->display_errors());
+                    exit;
+                }
+                $record = $this->CommonModel->selectSingleData("service",$conditions);
+                if($record['image']!= ''){
+                    $path = $_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['SCRIPT_NAME'])."/assets/upload/service/".$record['image'];
+                    unlink($path);
+                }
+                $records['image'] = $imagename;
             }
             $records['updated_at'] = $this->timeStamp();
             $response = $this->CommonModel->updateTable("service",$conditions,$records);
