@@ -30,6 +30,14 @@
 					<span class="pcoded-mtext">Service</span>
 				</a>
 			</li>
+			<li class="<?= $menu_active == 'offer'?'active':''?>">
+				<a href="<?= $this->adminURL ?>offer">
+					<span class="pcoded-micon">
+						<i class="icofont icofont-gift"></i>
+					</span>
+					<span class="pcoded-mtext">Offer</span>
+				</a>
+			</li>
 		</ul>
 	</div>
 </nav>

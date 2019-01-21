@@ -1,8 +1,6 @@
 <script>
     $(document).ready(function () {
 		$("#add-form-button").on("click", function(){
-            console.log("hello world");
-
 			setupModelDetails('Add <?= $pageTitle?>', $('#add-form-contents').html());
 		});
     });
@@ -107,4 +105,32 @@
         $('#error-messages').scrollTop();
         $('#common-popup').animate({ scrollTop: 0 }, 'slow');
     }
+    $(document).on('focus', '#add-form, #edit-form', function(){
+        $('.datepicker').datepicker({
+            format: 'yyyy-mm-dd',
+            startDate: new Date(),
+			autoclose: true,
+        });
+        $(".start-datepicker").datepicker({
+            format: 'yyyy-mm-dd',
+            startDate: new Date(),
+            autoclose: true,
+        }).on('changeDate', function (selected) {
+            var startDate = new Date(selected.date.valueOf());
+            $('.end-datepicker').datepicker('setStartDate', startDate);
+        }).on('clearDate', function (selected) {
+            $('.end-datepicker').datepicker('setStartDate', null);
+        });
+
+        $(".end-datepicker").datepicker({
+            format: 'yyyy-mm-dd',
+            startDate: new Date(),
+            autoclose: true,
+        }).on('changeDate', function (selected) {
+            var endDate = new Date(selected.date.valueOf());
+            $('.start-datepicker').datepicker('setEndDate', endDate);
+        }).on('clearDate', function (selected) {
+            $('.start-datepicker').datepicker('setEndDate', null);
+        });
+    });
 </script>
