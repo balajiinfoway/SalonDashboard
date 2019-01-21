@@ -34,7 +34,7 @@ class LoginController extends AdminController {
                     }
                 }else{
                     $this->setFlashData('error','Incorrect Details Entered!');
-                    redirect($this->adminURL."/Login",$data);
+                    redirect("/login",$data);
                 }
             } else {
                 $data['errors'] = validation_errors();
