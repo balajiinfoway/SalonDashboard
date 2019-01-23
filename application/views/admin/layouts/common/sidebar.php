@@ -14,6 +14,14 @@
 					<span class="pcoded-mtext">Dashboard</span>
 				</a>
 			</li>
+			<li class="<?= $menu_active == 'salon'?'active':''?>">
+				<a href="<?= $this->adminURL ?>salon">
+					<span class="pcoded-micon">
+						<i class="ti-user"></i>
+					</span>
+					<span class="pcoded-mtext">Salon</span>
+				</a>
+			</li>
 			<li class="<?= $menu_active == 'user'?'active':''?>">
 				<a href="<?= $this->adminURL ?>user">
 					<span class="pcoded-micon">
@@ -28,6 +36,14 @@
 						<i class="ti-gallery"></i>
 					</span>
 					<span class="pcoded-mtext">Service</span>
+				</a>
+			</li>
+			<li class="<?= $menu_active == 'subservice'?'active':''?>">
+				<a href="<?= $this->adminURL ?>subservice">
+					<span class="pcoded-micon">
+						<i class="ti-gallery"></i>
+					</span>
+					<span class="pcoded-mtext">Sub Service</span>
 				</a>
 			</li>
 			<li class="<?= $menu_active == 'offer'?'active':''?>">

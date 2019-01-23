@@ -13,7 +13,7 @@ class LoginController extends AdminController {
                 $email = $this->input->post('email');
                 $password = $this->input->post('password');
                 $conditions['conditions'] = array('email' => $email);
-                $result = $this->CommonModel->selectSingleRow('users', $conditions);
+                $result = $this->CommonModel->selectSingleRow('admins', $conditions);
                 if (count($result) <= 0) {
                     $this->setFlashData('error','Incorrect email Address');
                     redirect("/login",$data);

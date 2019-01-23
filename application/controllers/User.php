@@ -49,6 +49,10 @@ class User extends AdminController {
        echo json_encode($output);
     }
 
+    public function create(){
+        $this->loadView('subservice/add');
+    }
+
     public function add() {
         $this->checkSessionAdmin();
         $this->form_validation->set_rules('name', 'Name', 'trim|required');

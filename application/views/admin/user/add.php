@@ -1,4 +1,3 @@
-<div id="add-form-contents" class="d-none">
 	<form role="form" id="add-form" autocomplete="off" enctype="multipart/form-data" method="post" action="<?= $this->adminURL ?>user/add">
 		<div class="modal-body">
 			<div class="row">
@@ -37,4 +36,3 @@
 		</div>
 		<?php $this->load->view($this->folder.'/layouts/common/common_popup_footer'); ?>
 	</form>
-</div>

@@ -18,7 +18,7 @@ class Offer extends AdminController {
         if(isset($_POST["search"]["value"]) && $_POST["search"]["value"] != '')
         {
             $conditions['like'] = array('name' => $_POST["search"]["value"]);
-            $conditions['or_like'] = array('price' =>  $_POST["search"]["value"],'discount_price' =>  $_POST["search"]["value"]);
+            $conditions['or_like'] = array('discount' =>  $_POST["search"]["value"]);
         }
         if(isset($_POST["order"]))
         {
@@ -30,7 +30,7 @@ class Offer extends AdminController {
         {
             $conditions['limits'] = array("limit" => $_POST['length'],"start" => $_POST['start']);
         }
-        $fetchData = $this->CommonModel->selectData('offer',$conditions);
+        $fetchData = $this->CommonModel->selectData('offers',$conditions);
         $data = array();
         foreach($fetchData as $row)
         {
@@ -41,8 +41,8 @@ class Offer extends AdminController {
             $sub_array[] = '';
 
             $sub_array[] = $row['name'];
-            $sub_array[] = $row['price'];
-            $sub_array[] = $row['discount_price'];
+            $sub_array[] = $row['discount'];
+            $sub_array[] = $row['coupon_code'];
             $sub_array[] = $row['start_date'];
             $sub_array[] = $row['end_date'];
             $sub_array[] = '<button type="button" data-url="'.$this->adminURL.'offer/edit/'.$row['id'].'" name="update" id="'.$row['id'].'" class="btn btn-warning btn-xs edit-form-button">Update</button>   <button type="button" name="delete" data-url="'.$this->adminURL.'offer/delete/'.$row['id'].'" id="'.$row['id'].'" class="btn btn-danger btn-xs delete-button">Delete</button>';
@@ -50,18 +50,22 @@ class Offer extends AdminController {
         }
         $output = array(
             "draw"             =>     isset($_POST["draw"])?intval($_POST["draw"]):'',
-            "recordsTotal"     =>      $this->CommonModel->countAllResult("offer"),
-            "recordsFiltered"  =>     $this->CommonModel->num_rows("offer"),
+            "recordsTotal"     =>      $this->CommonModel->countAllResult("offers"),
+            "recordsFiltered"  =>     $this->CommonModel->num_rows("offers"),
             "data"             =>     $data
        );
        echo json_encode($output);
     }
 
+    public function create(){
+        $this->loadView('offer/add');
+    }
+
     public function add() {
         $this->checkSessionAdmin();
         $this->form_validation->set_rules('name', 'Name', 'trim|required');
-        $this->form_validation->set_rules('price', 'Price', 'trim|numeric|required');
-        $this->form_validation->set_rules('discount_price', 'Discount Price', 'trim|numeric|required');
+        $this->form_validation->set_rules('discount', 'Discount', 'trim|numeric|required');
+        $this->form_validation->set_rules('coupon_code', 'Coupon Code', 'trim|required');
         $this->form_validation->set_rules('start_date', 'Start Date', 'required');
         $this->form_validation->set_rules('end_date', 'End Date', 'required');
         if (empty($_FILES['offerImage']['name'])){
@@ -87,13 +91,12 @@ class Offer extends AdminController {
                 $records['image'] = $imagename;
             }
             $records['name'] = $postData['name'];
-            $records['price'] = $postData['price'];
-            $records['discount_price'] = $postData['discount_price'];
-            $records['start_date'] = $postData['start_date'];
+            $records['discount'] = $postData['discount'];
+            $records['coupon_code'] = $postData['coupon_code'];
             $records['start_date'] = $postData['start_date'];
             $records['end_date'] = $postData['end_date'];
             $records['created_at'] = $this->timeStamp();
-            $response = $this->CommonModel->insert("offer", $records);
+            $response = $this->CommonModel->insert("offers", $records);
             $this->errorFunction(false,"inserted record");
         }
 
@@ -101,7 +104,7 @@ class Offer extends AdminController {
 
     public function edit($id = null){
         $conditions['conditions'] =array("id" => $id);
-        $record =  $this->CommonModel->selectSingleRow("offer",$conditions);
+        $record =  $this->CommonModel->selectSingleRow("offers",$conditions);
         $data['record'] = $record;
         $data['id'] = $id;
         $this->loadView('offer/edit',$data);
@@ -110,8 +113,8 @@ class Offer extends AdminController {
     public function update($id=null){
         $conditions =array("id" => $id);
         $this->form_validation->set_rules('name', 'Name', 'trim|required');
-        $this->form_validation->set_rules('price', 'Price', 'trim|numeric|required');
-        $this->form_validation->set_rules('discount_price', 'Discount Price', 'trim|numeric|required');
+        $this->form_validation->set_rules('discount', 'Discount', 'trim|numeric|required');
+        $this->form_validation->set_rules('coupon_code', 'Coupon Code', 'trim|required');
         $this->form_validation->set_rules('start_date', 'Start Date', 'required');
         $this->form_validation->set_rules('end_date', 'End Date', 'required');
         if ($this->form_validation->run() == true){
@@ -134,7 +137,7 @@ class Offer extends AdminController {
                     $this->errorFunction(true,$this->upload->display_errors());
                     exit;
                 }
-                $record = $this->CommonModel->selectSingleData("offer",$conditions);
+                $record = $this->CommonModel->selectSingleData("s",$conditions);
                 if($record['image']!= ''){
                     $path = $_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['SCRIPT_NAME'])."/assets/upload/offer/".$record['image'];
                     unlink($path);
@@ -142,7 +145,7 @@ class Offer extends AdminController {
                 $records['image'] = $imagename;
             }
             $records['updated_at'] = $this->timeStamp();
-            $response = $this->CommonModel->updateTable("offer",$conditions,$records);
+            $response = $this->CommonModel->updateTable("offers",$conditions,$records);
             $this->errorFunction(false,"update record");
         }else{
             $this->errorFunction(true,validation_errors());
@@ -150,12 +153,12 @@ class Offer extends AdminController {
     }
     public function delete($id = null){
         $conditions =array("id" => $id);
-        $record = $this->CommonModel->selectSingleData("offer",$conditions);
+        $record = $this->CommonModel->selectSingleData("offers",$conditions);
         if($record['image']!= ''){
             $path = $_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['SCRIPT_NAME'])."/assets/upload/offer/".$record['image'];
             unlink($path);
         }
-        $response = $this->CommonModel->delete("offer",$conditions);
+        $response = $this->CommonModel->delete("offers",$conditions);
         $this->errorFunction(false,"delete record");
 	}
 }

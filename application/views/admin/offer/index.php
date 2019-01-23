@@ -8,7 +8,7 @@
             </div>
         </div>
         <div class="col-lg-4">
-            <button type="button" class="btn btn-primary float-right" id="add-form-button">ADD</button>
+        <button type="button" class="btn btn-primary float-right" id="add-form-button" data-url="<?= $this->adminURL ?>offer/create">ADD</button>
         </div>
     </div>
 </div>
@@ -39,4 +39,3 @@
 		</div>
 	</div>
 </div>
-<?php $this->load->view($this->folder.'/offer/add'); ?>

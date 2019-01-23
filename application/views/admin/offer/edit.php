@@ -12,15 +12,15 @@
 			</div>
             <div class="col-sm-6">
                 <div class="form-group form-default">
-                    <label class="float-label">Price</label>
-                    <input type="text" name="price" class="form-control" value="<?php echo $record['price']; ?>">
+                    <label class="float-label">Discount</label>
+                    <input type="text" name="discount" class="form-control" value="<?php echo $record['discount']; ?>">
                     <span class="form-bar"></span>
                 </div>
             </div>
             <div class="col-sm-6">
                 <div class="form-group form-default">
-                    <label class="float-label">Discount Price</label>
-                    <input type="text" name="discount_price" class="form-control" value="<?php echo $record['discount_price']; ?>">
+                    <label class="float-label">Coupon Code</label>
+                    <input type="text" name="coupon_code" class="form-control" value="<?php echo $record['coupon_code']; ?>">
                     <span class="form-bar"></span>
                 </div>
             </div>

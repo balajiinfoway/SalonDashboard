@@ -15,7 +15,6 @@ class Service extends AdminController {
     public function fetch_data(){
         $conditions = array();
 
-        $conditions1['conditions'] = array("deleted_at IS NULL" => null);
         if(isset($_POST["search"]["value"]) && $_POST["search"]["value"] != '')
         {
             $conditions['like'] = array('name' => $_POST["search"]["value"]);
@@ -31,8 +30,7 @@ class Service extends AdminController {
         {
             $conditions['limits'] = array("limit" => $_POST['length'],"start" => $_POST['start']);
         }
-        $conditions['conditions'] = array("deleted_at IS NULL" => null);
-        $fetchData = $this->CommonModel->selectData('service',$conditions);
+        $fetchData = $this->CommonModel->selectData('services',$conditions);
         $data = array();
         foreach($fetchData as $row)
         {
@@ -48,11 +46,15 @@ class Service extends AdminController {
         }
         $output = array(
             "draw"             =>     isset($_POST["draw"])?intval($_POST["draw"]):'',
-            "recordsTotal"     =>      $this->CommonModel->countAllResult("service",$conditions1),
-            "recordsFiltered"  =>     $this->CommonModel->num_rows("service", $conditions1),
+            "recordsTotal"     =>      $this->CommonModel->countAllResult("services"),
+            "recordsFiltered"  =>     $this->CommonModel->num_rows("services"),
             "data"             =>     $data
        );
        echo json_encode($output);
+    }
+
+    public function create(){
+        $this->loadView('service/add');
     }
 
     public function add() {
@@ -83,7 +85,7 @@ class Service extends AdminController {
             $records['name'] = $postData['name'];
             $records['type'] = $postData['type'];
             $records['created_at'] = $this->timeStamp();
-            $response = $this->CommonModel->insert("service", $records);
+            $response = $this->CommonModel->insert("services", $records);
             $this->errorFunction(false,"inserted record");
         }
 
@@ -91,7 +93,7 @@ class Service extends AdminController {
 
     public function edit($id = null){
         $conditions['conditions'] =array("id" => $id);
-        $record =  $this->CommonModel->selectSingleRow("service",$conditions);
+        $record =  $this->CommonModel->selectSingleRow("services",$conditions);
         $data['record'] = $record;
         $data['id'] = $id;
         $this->loadView('service/edit',$data);
@@ -119,7 +121,7 @@ class Service extends AdminController {
                     $this->errorFunction(true,$this->upload->display_errors());
                     exit;
                 }
-                $record = $this->CommonModel->selectSingleData("service",$conditions);
+                $record = $this->CommonModel->selectSingleData("services",$conditions);
                 if($record['image']!= ''){
                     $path = $_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['SCRIPT_NAME'])."/assets/upload/service/".$record['image'];
                     unlink($path);
@@ -127,7 +129,7 @@ class Service extends AdminController {
                 $records['image'] = $imagename;
             }
             $records['updated_at'] = $this->timeStamp();
-            $response = $this->CommonModel->updateTable("service",$conditions,$records);
+            $response = $this->CommonModel->updateTable("services",$conditions,$records);
             $this->errorFunction(false,"update record");
         }else{
             $this->errorFunction(true,validation_errors());
@@ -135,8 +137,12 @@ class Service extends AdminController {
     }
     public function delete($id = null){
         $conditions =array("id" => $id);
-        $records['deleted_at'] = $this->timeStamp();
-        $response = $this->CommonModel->updateTable("service",$conditions,$records);
+        $record = $this->CommonModel->selectSingleData("services",$conditions);
+        if($record['image']!= ''){
+            $path = $_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['SCRIPT_NAME'])."/assets/upload/service/".$record['image'];
+            unlink($path);
+        }
+        $response = $this->CommonModel->delete("services",$conditions);
         $this->errorFunction(false,"delete record");
 	}
 }

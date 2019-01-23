@@ -8,7 +8,7 @@
             </div>
         </div>
         <div class="col-lg-4">
-            <button type="button" class="btn btn-primary float-right" id="add-form-button">ADD</button>
+        <button type="button" class="btn btn-primary float-right" id="add-form-button" data-url="<?= $this->adminURL ?>user/create">ADD</button>
         </div>
     </div>
 </div>
@@ -21,7 +21,7 @@
 				</div>
 				<div class="card-block">
                     <div class="dt-responsive table-responsive">
-                        <table id="user_data" class="table table-bordered table-striped">
+                        <table id="data-table" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
                                     <th>Name</th>
@@ -37,4 +37,3 @@
 		</div>
 	</div>
 </div>
-<?php $this->load->view($this->folder.'/user/add'); ?>

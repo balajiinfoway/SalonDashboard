@@ -1,6 +1,6 @@
 <script>
 $(document).ready(function () {
-    	var dataTable = $('#user_data').DataTable({
+    	var dataTable = $('#data-table').DataTable({
     		"processing": true,
     		"serverSide": true,
     		"order": [],
