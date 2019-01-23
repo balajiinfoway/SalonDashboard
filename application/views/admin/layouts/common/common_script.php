@@ -30,9 +30,7 @@
 		axios.get(url)
 			.then(function(response) {
 				showNotice('success', 'delete record');
-				setTimeout(function() {
-					window.location.reload();
-				}, 1000);
+				refreshDatatable();
 			})
 			.catch(function(error) {
 				console.log(error);
@@ -144,4 +142,38 @@
 			$('.start-datepicker').datepicker('setEndDate', null);
 		});
     }
+
+	// Image Validation
+	$(document).on('change', '.imageValidate', function() {
+		$extMsg = '<div class="col-form-label">Invalid Image Format! Image Format Must Be JPG, JPEG, PNG or GIF. </div>';
+		$sizeMsg = '<div class="col-form-label">Maximum File Size Limit is 1MB. </div>';
+		if ($('.btnSubmit').attr('disabled', false)) {
+			$('.btnSubmit').attr('disabled', true);
+		}
+		var ext = $('.imageValidate').val().split('.').pop().toLowerCase();
+		if ($.inArray(ext, ['gif','png','jpg','jpeg']) == -1) {
+			$(this).parent().parent().addClass('has-danger');
+			$(this).addClass('form-control-danger');
+			$(this).after($extMsg);
+			a = 0;
+		} else {
+			var picsize = (this.files[0].size);
+			if (picsize > 1000000) {
+				console.log('sixe');
+				$(this).parent().parent().addClass('has-danger');
+				$(this).addClass('form-control-danger');
+				$(this).after($sizeMsg);
+				a = 0;
+			} else {
+				a = 1;
+			}
+
+			if (a == 1) {
+				$(this).next('div').remove();
+				$(this).removeClass('form-control-danger');
+				$(this).parent().parent().removeClass('has-danger');
+				$('.btnSubmit').attr('disabled', false);
+			}
+		}
+	});
 </script>

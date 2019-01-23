@@ -1,7 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 class SubService extends AdminController {
-    var $order_column = array("name", "price");
     public function __construct() {
         parent::__construct();
     }
@@ -17,7 +16,9 @@ class SubService extends AdminController {
     }
     public function fetch_data(){
         $conditions = array();
-
+        $conditions['fields'] = "services.id as service_id, services.name as services_name, sub_services.*";
+        $conditions['joins'][] = array('table'=> 'services','joinWith' => 'services.id = sub_services.service_id', 'type'=> 'LEFT');
+        $order_column = array('services.name',"sub_services.name", "sub_services.price");
         if(isset($_POST["search"]["value"]) && $_POST["search"]["value"] != '')
         {
             $conditions['like'] = array('name' => $_POST["search"]["value"]);
@@ -25,7 +26,7 @@ class SubService extends AdminController {
         }
         if(isset($_POST["order"]))
         {
-            $conditions['order_by'] = array("field"=>$this->order_column[$_POST['order']['0']['column']],"order"=>$_POST['order']['0']['dir']);
+            $conditions['order_by'] = array("field"=>$order_column[$_POST['order']['0']['column']],"order"=>$_POST['order']['0']['dir']);
         }else{
             $conditions['order_by'] = array("field"=>"id","order"=>"desc");
         }
@@ -33,14 +34,13 @@ class SubService extends AdminController {
         {
             $conditions['limits'] = array("limit" => $_POST['length'],"start" => $_POST['start']);
         }
-        $conditions['fields'] = "services.id as service_id, services.name as services_name, sub_services.*";
-        $conditions['joins'][] = array('table'=> 'services','joinWith' => 'services.id = sub_services.service_id', 'type'=> 'LEFT');
-        $fetchData = $this->CommonModel->selectData('sub_services',$conditions);
 
+        $fetchData = $this->CommonModel->selectData('sub_services',$conditions);
         $data = array();
         foreach($fetchData as $row)
         {
             $sub_array = array();
+            $sub_array[] = $row['services_name'];
             $sub_array[] = $row['name'];
             $sub_array[] = $row['price'];
             // if($row['image'])
@@ -71,27 +71,13 @@ class SubService extends AdminController {
         $this->form_validation->set_rules('name', 'Name', 'trim|required');
         $this->form_validation->set_rules('details', 'Details', 'trim|required');
         $this->form_validation->set_rules('price', 'Price', 'trim|required');
-        // if (empty($_FILES['subServiceImage']['name'])){
-        //     $this->form_validation->set_rules('subServiceImage', 'Image', 'required');
-        // }
+        if (empty($_FILES['subServiceImage']['name'])){
+            $this->form_validation->set_rules('subServiceImage', 'Image', 'required');
+        }
         if ($this->form_validation->run() == FALSE) {
             $this->errorFunction(true,validation_errors());
         } else {
             $postData = $this->input->post();
-            // if($_FILES["subServiceImage"]['name'] != ""){
-            //     $imagename = time()."-".str_replace(" ","-",$_FILES["subServiceImage"]['name']);
-            //     $this->load->library('upload');
-            //     $this->upload->initialize(array(
-            //         "upload_path" => "./assets/upload/service/",
-            //         "allowed_types" => "gif|jpg|png",
-            //         "file_name"=>$imagename,
-            //     ));
-            //     if (!$this->upload->do_upload("subServiceImage")){
-            //         $this->errorFunction(true,$this->upload->display_errors());
-            //         exit;
-            //     }
-            //     $records['image'] = $imagename;
-            // }
             foreach($postData as $key => $value){
                 if($key !="submit"){
                     $records[$key] = $value;
@@ -99,6 +85,32 @@ class SubService extends AdminController {
             }
             $records['created_at'] = $this->timeStamp();
             $response = $this->CommonModel->insert("sub_services", $records);
+            if($_FILES["subServiceImage"]['name'] != ""){
+                $images = array();
+                $files = $_FILES;
+                $count = count($_FILES["subServiceImage"]['name']);
+                $this->load->library('upload');
+                for($i = 0; $i < $count; $i++){
+                    if($_FILES["subServiceImage"]['name'][$i] != ""){
+                        $_FILES['userfile']['name']= time()."-".str_replace(" ","-",$_FILES["subServiceImage"]['name'][$i]);;
+                        $_FILES['userfile']['type']= $files['subServiceImage']['type'][$i];
+                        $_FILES['userfile']['tmp_name']= $files['subServiceImage']['tmp_name'][$i];
+                        $_FILES['userfile']['error']= $files['subServiceImage']['error'][$i];
+                        $_FILES['userfile']['size']= $files['subServiceImage']['size'][$i];
+                        $this->upload->initialize(array(
+                            "upload_path" => "./assets/upload/subservice/",
+                            "allowed_types" => "gif|jpg|png|jpeg",
+                        ));
+                        $this->upload->do_upload();
+                        $images[] = $this->upload->data();
+                    }
+                }
+                foreach($images as $image){
+                    $records = array('sub_service_id' => $response, 'image' => $image['file_name']);
+                    $records['created_at'] = $this->timeStamp();
+                    $response1 = $this->CommonModel->insert("sub_service_images", $records);
+                }
+            }
             $this->errorFunction(false,"inserted record");
         }
 
@@ -108,8 +120,11 @@ class SubService extends AdminController {
         $services= $this->CommonModel->selectData('services');
         $data['services'] = $services;
         $conditions['conditions'] =array("id" => $id);
+        $conditions1['conditions'] =array("sub_service_id" => $id);
+        $images = $this->CommonModel->selectData("sub_service_images",$conditions1);
         $record =  $this->CommonModel->selectSingleRow("sub_services",$conditions);
         $data['record'] = $record;
+        $data['images'] = $images;
         $data['id'] = $id;
         $this->loadView('subservice/edit',$data);
     }
@@ -126,25 +141,33 @@ class SubService extends AdminController {
                     $records[$key] = $value;
                 }
             }
-            // if($_FILES["subServiceImage"]['name'] != ""){
-            //     $imagename = time()."-".str_replace(" ","-",$_FILES["subServiceImage"]['name']);
-            //     $this->load->library('upload');
-            //     $this->upload->initialize(array(
-            //         "upload_path" => "./assets/upload/service/",
-            //         "allowed_types" => "gif|jpg|png|jpeg",
-            //         "file_name"=>$imagename,
-            //     ));
-            //     if (!$this->upload->do_upload("subServiceImage")){
-            //         $this->errorFunction(true,$this->upload->display_errors());
-            //         exit;
-            //     }
-            //     $record = $this->CommonModel->selectSingleData("sub_services",$conditions);
-            //     if($record['image']!= ''){
-            //         $path = $_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['SCRIPT_NAME'])."/assets/upload/service/".$record['image'];
-            //         unlink($path);
-            //     }
-            //     $records['image'] = $imagename;
-            // }
+
+            if($_FILES["subServiceImage"]['name'] != ""){
+                $images = array();
+                $files = $_FILES;
+                $count = count($_FILES["subServiceImage"]['name']);
+                $this->load->library('upload');
+                for($i = 0; $i < $count; $i++){
+                    if($_FILES["subServiceImage"]['name'][$i] != ""){
+                        $_FILES['userfile']['name']= time()."-".str_replace(" ","-",$_FILES["subServiceImage"]['name'][$i]);;
+                        $_FILES['userfile']['type']= $files['subServiceImage']['type'][$i];
+                        $_FILES['userfile']['tmp_name']= $files['subServiceImage']['tmp_name'][$i];
+                        $_FILES['userfile']['error']= $files['subServiceImage']['error'][$i];
+                        $_FILES['userfile']['size']= $files['subServiceImage']['size'][$i];
+                        $this->upload->initialize(array(
+                            "upload_path" => "./assets/upload/subservice/",
+                            "allowed_types" => "gif|jpg|png|jpeg",
+                        ));
+                        $this->upload->do_upload();
+                        $images[] = $this->upload->data();
+                    }
+                }
+                foreach($images as $image){
+                    $records1 = array('sub_service_id' => $id, 'image' => $image['file_name']);
+                    $records1['created_at'] = $this->timeStamp();
+                    $response = $this->CommonModel->insert("sub_service_images", $records1);
+                }
+            }
             $records['updated_at'] = $this->timeStamp();
             $response = $this->CommonModel->updateTable("sub_services",$conditions,$records);
             $this->errorFunction(false,"update record");
@@ -153,13 +176,28 @@ class SubService extends AdminController {
         }
     }
     public function delete($id = null){
-        $conditions =array("id" => $id);
-        $record = $this->CommonModel->selectSingleData("sub_services",$conditions);
-        if($record['image']!= ''){
-            $path = $_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['SCRIPT_NAME'])."/assets/upload/zubservice/".$record['image'];
-            unlink($path);
+        $conditions = array("id" => $id);
+        $conditions1 = array("sub_service_id" => $id);
+        $record = $this->CommonModel->selectData("sub_service_images",$conditions);
+        if($record){
+            foreach($record as $r){
+                $path = $_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['SCRIPT_NAME'])."/assets/upload/subservice/".$r['image'];
+                unlink($path);
+                $conditions2 =array("id" => $r['id']);
+                $response = $this->CommonModel->delete("sub_service_images",$conditions2);
+            }
         }
         $response = $this->CommonModel->delete("sub_services",$conditions);
         $this->errorFunction(false,"delete record");
-	}
+    }
+
+    public function imageDelete($id = null){
+        $conditions =array("id" => $id);
+        $record = $this->CommonModel->selectSingleData("sub_service_images",$conditions);
+        if($record['image']!= ''){
+            $path = $_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['SCRIPT_NAME'])."/assets/upload/subservice/".$record['image'];
+            unlink($path);
+        }
+        $response = $this->CommonModel->delete("sub_service_images",$conditions);
+    }
 }

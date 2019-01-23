@@ -45,7 +45,43 @@
 					<span class="form-bar"></span>
 				</div>
 			</div>
-
+			<?php
+			if($images){
+				foreach($images as $image){
+			?>
+			<div class="col-sm-4 text-center" style="margin-bottom:10px">
+				<img style="margin-bottom:5px;" src="<?= base_url() ?>/assets/upload/subservice/<?= $image['image'] ?>" width="60" height="100">
+				<br>
+				<a class="btn btn-danger remove-image" data-url="<?= $this->adminURL ?>subservice/imageDelete/<?= $image['id'] ?>">
+					Remove
+				</a>
+			</div>
+			<?php
+				}
+			}
+			?>
+			<div class="form-group col-sm-12 row sub-image">
+				<label class="col-sm-2 col-form-label">Image</label>
+				<div class="col-sm-8">
+					<input type="file" class="form-control imageValidate" name="subServiceImage[]" accept=".png, .jpg, .jpeg">
+				</div>
+				<div class="col-sm-2">
+					<button type="button" class="btn btn-info  add-sub-image">Add Image</button>
+				</div>
+			</div>
+			<template id="sub-img">
+				<div class="form-group col-sm-12 row">
+					<label class="col-sm-2 col-form-label">Image</label>
+					<div class="col-sm-8">
+						<input type="file" class="form-control imageValidate" name="subServiceImage[]" accept=".png, .jpg, .jpeg">
+					</div>
+					<div class="col-sm-2">
+						<a class="btn btn-danger add-image-remove">
+							Remove
+						</a>
+					</div>
+				</div>
+			</template>
 		</div>
 	</div>
 	<?php $this->load->view($this->folder.'/layouts/common/common_popup_footer'); ?>

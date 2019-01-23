@@ -24,6 +24,7 @@
                         <table id="data-table" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
+                                    <th>Service</th>
                                     <th>Name</th>
                                     <th>Type</th>
                                     <th>Action</th>

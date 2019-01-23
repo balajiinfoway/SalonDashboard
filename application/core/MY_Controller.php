@@ -79,3 +79,7 @@ class AdminController extends MY_Controller{
     }
 
 }
+function dd($data){
+    echo "<pre>";
+    print_r($data);
+}
